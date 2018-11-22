@@ -1,20 +1,27 @@
+CC  := gcc
+OBJECTS	:= main.o parser.o video_selector.o
+CFLAGS	:= -g -Wall -W
+LFLAGS	:=-lavutil -lavformat -lavcodec -lswscale -lz -lm  `sdl-config --cflags --libs` 
+HEADERS	:= headers
+VPATH	:= $(HEADERS)
 
-
+.PHONY: all
 all: main.o parser.o video_selector.o
-	gcc -g -Wall -W -o  main main.o parser.o video_selector.o -lavutil -lavformat -lavcodec -lswscale -lz -lm  `sdl-config --cflags --libs` 
+	$(CC) $(CFLAGS) -o  main $^ $(LFLAGS) 
 
-main.o: main.c headers/parser.h headers/video_selector.h
-	gcc -g -Wall -W -c main.c headers/parser.h headers/video_selector.h -lavutil -lavformat -lavcodec -lswscale -lz -lm  `sdl-config --cflags --libs` 
+main.o: main.c parser.h video_selector.h
+	$(CC) $(CFLAGS) -c $^ $(LFLAGS) 
 
-parser.o: headers/parser.c headers/parser.h headers/video_selector.h
-	gcc -g -Wall -W -c headers/parser.c headers/parser.h headers/video_selector.h -lavutil -lavformat -lavcodec -lswscale -lz -lm  `sdl-config --cflags --libs`  
+parser.o: parser.c parser.h video_selector.h
+	$(CC) $(CFLAGS) -c $^ $(LFLAGS)  
 
-video_selector.o : headers/video_selector.c headers/video_selector.h 
-	gcc -g -Wall -W -c headers/video_selector.c headers/video_selector.h  -lavutil -lavformat -lavcodec -lswscale -lz -lm  `sdl-config --cflags --libs` 
+video_selector.o : video_selector.c video_selector.h 
+	$(CC) $(CFLAGS) -c $^  $(LFLAGS) 
 
+.PHONY: clean
 clean:
 	rm -rf *~
-	rm -rf *.o
+	rm -rf $(OBJECTS)
 	rm main
 	rm headers/*.gch
 
